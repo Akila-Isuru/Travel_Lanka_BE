@@ -3,6 +3,8 @@ import BookingModel from "../models/bookingModel";
 import DestinationModel from "../models/destinationModel";
 import { AuthRequest } from "../middleware/auth";
 import StayModel from "../models/stayModel";
+import UserModel from "../models/userModel";
+import { sendBookingConfirmationEmail } from "../utils/email";
 
 const calcNights = (checkIn: Date, checkOut: Date): number => {
   const diff = new Date(checkOut).getTime() - new Date(checkIn).getTime();
@@ -23,12 +25,15 @@ export const createBooking = async (req: AuthRequest, res: Response) => {
 
     let totalPriceCalculated = 0;
     let bookingDestination = null;
+    let destinationName = "";
+    let stayName = "";
 
     if (destination) {
       const dest = await DestinationModel.findById(destination);
       if (!dest) {
         return res.status(404).json({ message: "Destination not found" });
       }
+      destinationName = dest.name;
       totalPriceCalculated += nights * dest.pricePerNight * guests;
       bookingDestination = destination;
     }
@@ -38,6 +43,7 @@ export const createBooking = async (req: AuthRequest, res: Response) => {
       if (!stay) {
         return res.status(404).json({ message: "Selected stay not found" });
       }
+      stayName = stay.name;
 
       if (
         bookingDestination &&
@@ -85,6 +91,24 @@ export const createBooking = async (req: AuthRequest, res: Response) => {
       );
     }
 
+    try {
+      const user = await UserModel.findById(req.user.sub);
+      if (user) {
+        await sendBookingConfirmationEmail(user.email, user.name, {
+          destinationName,
+          stayName: stayName || undefined,
+          checkIn: new Date(checkIn),
+          checkOut: new Date(checkOut),
+          guests,
+          totalPrice: totalPriceCalculated,
+          bookingId: saved._id.toString(),
+          specialRequests: specialRequests || undefined,
+        });
+      }
+    } catch (emailError) {
+      console.error("Email sending failed:", emailError);
+    }
+
     res.status(201).json({ message: "Booking created!", data: saved });
   } catch (error) {
     console.error(error);
@@ -96,7 +120,7 @@ export const getMyBookings = async (req: AuthRequest, res: Response) => {
   try {
     const bookings = await BookingModel.find({ user: req.user.sub })
       .populate("destination", "name slug location images pricePerNight")
-      .populate("stayId", "name slug pricePerNight images location") // ✅ FIXED: Added slug field
+      .populate("stayId", "name slug pricePerNight images location")
       .sort({ createdAt: -1 });
     res.status(200).json({ data: bookings });
   } catch (error) {
@@ -117,7 +141,7 @@ export const getBookingById = async (req: AuthRequest, res: Response) => {
       .populate(
         "stayId",
         "name slug pricePerNight images location address amenities contactPhone",
-      ); // ✅ FIXED: Added slug field
+      );
 
     if (!booking) return res.status(404).json({ message: "Booking not found" });
     res.status(200).json({ data: booking });
@@ -148,7 +172,7 @@ export const getAllBookings = async (req: Request, res: Response) => {
   try {
     const bookings = await BookingModel.find()
       .populate("destination", "name slug location images pricePerNight")
-      .populate("stayId", "name slug pricePerNight images location") // ✅ FIXED: Added slug field
+      .populate("stayId", "name slug pricePerNight images location")
       .populate("user", "name email")
       .sort({ createdAt: -1 });
     res.status(200).json({ data: bookings });
