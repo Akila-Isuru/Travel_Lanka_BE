@@ -104,8 +104,11 @@ export const createReview = async (req: AuthRequest, res: Response) => {
   }
 };
 
+// ===== Params casts below: req.params values are typed string | string[] in strict mode =====
+
 export const getReviewsForTarget = async (req: Request, res: Response) => {
-  const { targetId, targetType } = req.params;
+  const targetId = req.params.targetId as string;
+  const targetType = req.params.targetType as "destination" | "event" | "stay";
 
   // Validate targetType
   if (!["destination", "event", "stay"].includes(targetType)) {
@@ -126,7 +129,8 @@ export const getReviewsForTarget = async (req: Request, res: Response) => {
 
 // ===== GET AVERAGE RATING FOR TARGET =====
 export const getAverageRating = async (req: Request, res: Response) => {
-  const { targetId, targetType } = req.params;
+  const targetId = req.params.targetId as string;
+  const targetType = req.params.targetType as "destination" | "event" | "stay";
 
   try {
     const result = await ReviewModel.aggregate([
