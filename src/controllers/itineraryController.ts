@@ -124,7 +124,7 @@ export const removeFromItinerary = async (req: AuthRequest, res: Response) => {
         .status(400)
         .json({ message: "Cannot modify booked itinerary" });
 
-    const index = parseInt(destIndex);
+    const index = parseInt(destIndex as string); // ← FIX
     if (isNaN(index) || index < 0 || index >= itinerary.destinations.length) {
       return res.status(400).json({ message: "Invalid destination index" });
     }
@@ -157,7 +157,7 @@ export const updateItineraryDestination = async (
         .status(400)
         .json({ message: "Cannot modify booked itinerary" });
 
-    const index = parseInt(destIndex);
+    const index = parseInt(destIndex as string); // ← FIX
     if (isNaN(index) || index < 0 || index >= itinerary.destinations.length) {
       return res.status(400).json({ message: "Invalid destination index" });
     }

@@ -153,7 +153,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
 // ===== Validate Reset Token =====
 export const validateResetToken = async (req: Request, res: Response) => {
-  const { token } = req.params;
+  const token = req.params.token as string; // ← FIX: cast (req.params can type as string | string[])
 
   try {
     if (!token) {

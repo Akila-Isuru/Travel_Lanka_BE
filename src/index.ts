@@ -15,7 +15,6 @@ import passport from "passport";
 import aiRouter from "./routers/aiRouter";
 import chatRouter from "./routers/chatRouter";
 import "./config/passport";
-import agentRouter from "./routers/agentRouter";
 import eventRouter from "./routers/eventRouter";
 import weatherRouter from "./routers/weatherRouter";
 
@@ -41,7 +40,6 @@ app.use("/api/v1/travel", travelRouter);
 app.use("/api/v1/itineraries", itineraryRouter);
 app.use("/api/v1/stays", stayRouter);
 app.use("/api/v1/chat", chatRouter);
-app.use("/api/v1/agents", agentRouter);
 app.use("/api/v1/events", eventRouter);
 app.use("/api/v1/weather", weatherRouter);
 
