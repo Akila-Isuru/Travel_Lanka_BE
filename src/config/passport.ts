@@ -9,7 +9,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      callbackURL: "/api/v1/auth/google/callback",
+      callbackURL: `${process.env.BACKEND_URL}/api/v1/auth/google/callback`,
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -42,7 +42,7 @@ passport.use(
     {
       clientID: process.env.FACEBOOK_APP_ID as string,
       clientSecret: process.env.FACEBOOK_APP_SECRET as string,
-      callbackURL: "/api/v1/auth/facebook/callback",
+      callbackURL: `${process.env.BACKEND_URL}/api/v1/auth/facebook/callback`,
       profileFields: ["id", "displayName", "emails"],
     },
     // src/config/passport.ts එකේ Facebook Strategy එක ඇතුලේ:

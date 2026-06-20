@@ -19,6 +19,10 @@
     "@types/mongoose": "^5.11.96",
     "@types/multer": "^2.1.0",
     "@types/node": "^25.9.0",
+<<<<<<< HEAD
+=======
+    "@types/nodemailer": "^8.0.1",
+>>>>>>> de386cfde37b1c47e8c8c98fe0aee9035f3776b1
     "@types/passport": "^1.0.17",
     "@types/passport-facebook": "^3.0.4",
     "@types/passport-google-oauth20": "^2.0.17",
@@ -27,15 +31,27 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+<<<<<<< HEAD
+=======
+    "axios": "^1.18.0",
+>>>>>>> de386cfde37b1c47e8c8c98fe0aee9035f3776b1
     "bcryptjs": "^3.0.3",
     "cloudinary": "^2.10.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+<<<<<<< HEAD
     "inngest": "^3.44.3",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.6.2",
     "multer": "^2.1.1",
+=======
+    "inngest": "^4.7.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.6.2",
+    "multer": "^2.1.1",
+    "nodemailer": "^9.0.1",
+>>>>>>> de386cfde37b1c47e8c8c98fe0aee9035f3776b1
     "passport": "^0.7.0",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
