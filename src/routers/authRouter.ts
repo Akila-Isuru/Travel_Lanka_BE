@@ -43,7 +43,7 @@ router.get(
     const accessToken = signAccessToken(user);
     const refreshToken = signRefreshToken(user);
     res.redirect(
-      `http://localhost:5173/oauth-callback?token=${accessToken}&refresh=${refreshToken}`,
+      `${process.env.FRONTEND_URL}/oauth-callback?token=${accessToken}&refresh=${refreshToken}`,
     );
   },
 );
@@ -62,7 +62,7 @@ router.get(
     const accessToken = signAccessToken(user);
     const refreshToken = signRefreshToken(user);
     res.redirect(
-      `http://localhost:5173/oauth-callback?token=${accessToken}&refresh=${refreshToken}`,
+      `${process.env.FRONTEND_URL}/oauth-callback?token=${accessToken}&refresh=${refreshToken}`,
     );
   },
 );
