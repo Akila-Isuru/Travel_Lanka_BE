@@ -1,10 +1,10 @@
-
 import mongoose, { Schema, Document, model } from "mongoose";
 
 export interface IReview extends Document {
   user: mongoose.Types.ObjectId;
-  destination: mongoose.Types.ObjectId;
-  rating: number;        
+  targetId: mongoose.Types.ObjectId;
+  targetType: "destination" | "event" | "stay";
+  rating: number;
   comment: string;
   createdAt: Date;
 }
@@ -16,9 +16,14 @@ const reviewSchema = new Schema<IReview>(
       ref: "User",
       required: true,
     },
-    destination: {
+    targetId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "DestinationModel",
+      required: true,
+      refPath: "targetType",
+    },
+    targetType: {
+      type: String,
+      enum: ["destination", "event", "stay"],
       required: true,
     },
     rating: {
@@ -35,10 +40,12 @@ const reviewSchema = new Schema<IReview>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-reviewSchema.index({ user: 1, destination: 1 }, { unique: true });
+reviewSchema.index({ user: 1, targetId: 1, targetType: 1 }, { unique: true });
+
+reviewSchema.index({ targetId: 1, targetType: 1 });
 
 const ReviewModel = model<IReview>("Review", reviewSchema);
 export default ReviewModel;
