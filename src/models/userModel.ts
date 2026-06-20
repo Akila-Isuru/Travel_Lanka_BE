@@ -10,6 +10,8 @@ export interface IUser extends Document {
   email: string;
   password: string;
   roles: UserRole[];
+  resetPasswordToken?: string;
+  resetPasswordExpires?: Date;
 }
 
 const userSchema = new Schema<IUser>(
@@ -32,8 +34,18 @@ const userSchema = new Schema<IUser>(
       enum: Object.values(UserRole),
       default: [UserRole.USER],
     },
+
+    resetPasswordToken: {
+      type: String,
+      default: null,
+    },
+    resetPasswordExpires: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true },
 );
+
 const UserModel = model<IUser>("User", userSchema);
 export default UserModel;
