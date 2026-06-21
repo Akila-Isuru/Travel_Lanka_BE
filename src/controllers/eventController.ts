@@ -112,7 +112,6 @@ export const getAllEvents = async (req: Request, res: Response) => {
         .skip(skip)
         .limit(Number(limit))
         .populate("destinationIds", "name slug location")
-        .populate("agentIds", "name slug photo")
         .lean(),
       EventModel.countDocuments(query),
     ]);
@@ -139,9 +138,10 @@ export const getEventBySlug = async (req: Request, res: Response) => {
   try {
     const { slug } = req.params;
 
-    const event = await EventModel.findOne({ slug, isPublished: true })
-      .populate("destinationIds", "name slug location images pricePerNight")
-      .populate("agentIds", "name slug photo pricePerDay rating");
+    const event = await EventModel.findOne({
+      slug,
+      isPublished: true,
+    }).populate("destinationIds", "name slug location images pricePerNight");
 
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
@@ -519,7 +519,6 @@ export const createEvent = async (req: AuthRequest, res: Response) => {
       maxCapacity,
       features,
       destinationIds,
-      agentIds,
       metaTitle,
       metaDescription,
       metaKeywords,
@@ -586,11 +585,6 @@ export const createEvent = async (req: AuthRequest, res: Response) => {
         ? typeof destinationIds === "string"
           ? destinationIds.split(",").map((id: string) => id.trim())
           : destinationIds
-        : [],
-      agentIds: agentIds
-        ? typeof agentIds === "string"
-          ? agentIds.split(",").map((id: string) => id.trim())
-          : agentIds
         : [],
       metaTitle: metaTitle || name,
       metaDescription: metaDescription || description.slice(0, 160),
@@ -700,9 +694,6 @@ export const updateEvent = async (req: AuthRequest, res: Response) => {
     if (req.body.destinationIds !== undefined) {
       event.destinationIds = parseArray(req.body.destinationIds) as any;
     }
-    if (req.body.agentIds !== undefined) {
-      event.agentIds = parseArray(req.body.agentIds) as any;
-    }
     if (req.body.metaKeywords !== undefined) {
       event.metaKeywords = parseArray(req.body.metaKeywords);
     }
@@ -784,11 +775,9 @@ export const deleteEvent = async (req: AuthRequest, res: Response) => {
 
 export const getAllEventsAdmin = async (req: AuthRequest, res: Response) => {
   try {
-    // ===== FIXED: Show ALL events regardless of publish status =====
     const events = await EventModel.find()
       .sort({ createdAt: -1 })
-      .populate("destinationIds", "name slug")
-      .populate("agentIds", "name slug");
+      .populate("destinationIds", "name slug");
 
     res.status(200).json({ success: true, data: events });
   } catch (error) {

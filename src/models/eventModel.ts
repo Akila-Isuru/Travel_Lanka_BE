@@ -42,7 +42,6 @@ export interface IEvent extends Document {
   status: "draft" | "published" | "upcoming" | "ongoing" | "past" | "cancelled";
   isPublished: boolean;
   destinationIds: mongoose.Types.ObjectId[];
-  agentIds: mongoose.Types.ObjectId[];
   metaTitle?: string;
   metaDescription?: string;
   metaKeywords?: string[];
@@ -122,9 +121,7 @@ const eventSchema = new Schema<IEvent>(
         default: [],
       },
     ],
-    agentIds: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "Agent", default: [] },
-    ],
+    // ===== REMOVED: agentIds field (Agent feature no longer used) =====
     metaTitle: { type: String, default: "" },
     metaDescription: { type: String, default: "" },
     metaKeywords: { type: [String], default: [] },
@@ -142,9 +139,6 @@ eventSchema.index({ category: 1 });
 eventSchema.index({ status: 1 });
 eventSchema.index({ isPublished: 1 });
 eventSchema.index({ coordinates: "2dsphere" });
-
-// ===== REMOVED: pre-save middleware (causing errors) =====
-// eventSchema.pre("save", ...) - REMOVED
 
 // ===== Check availability method =====
 eventSchema.methods.isAvailable = function (): boolean {
